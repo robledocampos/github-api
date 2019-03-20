@@ -10,8 +10,9 @@ class Github extends Model
     const API_URL = "https://api.github.com/users/";
 
     public static function getUser($user) {
-        $client = new \GuzzleHttp\Client();
+        $client = new \GuzzleHttp\Client(['http_errors' => false]);
         $result = $client->request('GET', self::API_URL.$user);
+
         $response['code'] = $result->getStatusCode();
         if ($response['code'] == 200) {
             $userData = \GuzzleHttp\json_decode($result->getBody());
