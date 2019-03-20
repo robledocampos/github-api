@@ -9,14 +9,23 @@ class GithubController extends Controller
 {
 
     public function user($user){
+        header('Content-Type:application/json');
         $response = Github::getUser($user);
+
+        self::buildResponse($response);
+    }
+
+    public function userRepos($user){
+        header('Content-Type:application/json');
+        $response = Github::getUserRepos($user);
 
         print_r($response); die;
     }
 
-    public function userRepos($user){
-        $response = Github::getUserRepos($user);
+    private static  function buildResponse($response) {
 
-        print_r($response); die;
+        if (isset($response['body'])) {
+            echo (\GuzzleHttp\json_encode($response['body']));
+        }
     }
 }
