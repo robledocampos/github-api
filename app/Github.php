@@ -11,6 +11,13 @@ class Github extends Model
     const API_URL = "https://api.github.com/users/";
     const REPOS_PER_PAGE = 30;
 
+    /**
+     * Retrieves user data from github api
+     *
+     * @param $user
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public static function getUser($user) {
         $client = new \GuzzleHttp\Client(['http_errors' => false]);
         try {
@@ -34,6 +41,13 @@ class Github extends Model
         return $response;
     }
 
+    /**
+     * Retrieves user's repo list from github api
+     *
+     * @param $user
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public static function getUserRepos($user) {
         $client = new \GuzzleHttp\Client(['http_errors' => false]);
         try {
@@ -71,6 +85,10 @@ class Github extends Model
         return $response;
     }
 
+    /**
+     * @return mixed
+     * @codeCoverageIgnore
+     */
     private static function buildErrorResponse() {
         $response['code'] = 500;
         $response['body'] = "Try again later :/";

@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/users/{username}', 'GithubController@user');
-Route::get('/users/{username}/repos', 'GithubController@methodNotAllowed');
+Route::get('/users/{username}/repos', 'GithubController@userRepos');
 Route::match(['post', 'put', 'delete', 'patch', 'delete'], '/users/{username}', 'GithubController@methodNotAllowed');
 Route::match(['post', 'put', 'delete', 'patch', 'delete'], '/users/{username}/repos', 'GithubController@methodNotAllowed');
 
