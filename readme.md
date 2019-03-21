@@ -14,15 +14,15 @@ It was developed over a Docker running a Debian Stretch instance, with PHP 7.2 a
 (make sure you do not have other service running on port 80, or change the first port number parameter):
 
         $ docker run -d -p 80:80 github-api-image
-        
-        
-## Tests
-
-   To run the tests, access the tests folde and execute the following:
-
-        $ php ../vendor/bin/phpunit Unit --
-        
+              
 ## Endpoints
 
   - localhost[:port]/api/users/[username]
   - localhost[:port]/api/users/[username]/repos
+  
+## Tests
+
+   To run the tests, access the tests folder and execute the following:
+
+        $ php ../vendor/bin/phpunit Unit
+        
