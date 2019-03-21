@@ -12,6 +12,8 @@ RUN apt update
 RUN apt install -y php7.2 php7.2-mbstring php7.2-curl
 RUN apt install -y apache2 libapache2-mod-php7.2
 
+RUN a2enmod rewrite
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 RUN sed -i 's/\/var\/www\/html/\/var\/www\/html\/github-api\/public/' /etc/apache2/sites-available/000-default.conf
 
 ADD . /var/www/html/github-api
