@@ -20,7 +20,12 @@ class GithubController extends Controller
         return self::buildResponse($response);
     }
 
-    private static  function buildResponse($response) {
+    public static function methodNotAllowed() {
+
+        return response("", 405);
+    }
+
+    private static function buildResponse($response) {
         $response['body'] = isset($response['body']) ? \GuzzleHttp\json_encode($response['body']) : "";
 
         return response($response['body'], $response['code'])

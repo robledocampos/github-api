@@ -9,6 +9,7 @@ use Mockery\Exception;
 class Github extends Model
 {
     const API_URL = "https://api.github.com/users/";
+    const REPOS_PER_PAGE = 30;
 
     public static function getUser($user) {
         $client = new \GuzzleHttp\Client(['http_errors' => false]);
@@ -16,7 +17,7 @@ class Github extends Model
             $result = $client->request('GET', self::API_URL.$user);
         } catch (Exception $exception) {
 
-            return self::internalServerError();
+            return self::buildErrorResponse();
         }
         $response['code'] = $result->getStatusCode();
         if ($response['code'] == 200) {
@@ -37,13 +38,13 @@ class Github extends Model
         $client = new \GuzzleHttp\Client(['http_errors' => false]);
         try {
             $page = 1;
-            //do {
+            do {
                 $result = $client->request('GET', self::API_URL.$user."/repos", ['query' => ['page' => $page]]);
                 $response['code'] = $result->getStatusCode();
                 if ($response['code'] == 200) {
                     $repos = \GuzzleHttp\json_decode($result->getBody());
                     if (empty($repos)) {
-                        //break;
+                        break;
                     } else {
                         foreach ($repos as $repo) {
                             $response['body'][] = [
@@ -53,23 +54,24 @@ class Github extends Model
                                 'html_url' => $repo->html_url
                             ];
                         }
+                        if (count($repos) < self::REPOS_PER_PAGE) {
+                            break;
+                        }
                     }
-
                 } else {
-                    //break;
+                    break;
                 }
                 $page++;
-            //} while(true);
+            } while(true);
         } catch (Exception $exception) {
 
-            return self::internalServerError();
+            return self::buildErrorResponse();
         }
-
 
         return $response;
     }
 
-    private static function internalServerError() {
+    private static function buildErrorResponse() {
         $response['code'] = 500;
         $response['body'] = "Try again later :/";
 
