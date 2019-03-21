@@ -11,20 +11,18 @@ class GithubControllerTest extends TestCase
      * @dataProvider users
      */
     public function testUser($user) {
-        $response = Github::getUser($user);
+        $response = GithubController::user($user);
 
-        $this->assertIsArray($response);
-        $this->assertIsNumeric($response['code']);
+        $this->assertInstanceOf("\Illuminate\Http\Response", $response);
     }
 
     /**
      * @dataProvider users
      */
     public function testUserRepos($user) {
-        $response = Github::getUserRepos($user);
+        $response = GithubController::userRepos($user);
 
-        $this->assertIsArray($response);
-        $this->assertIsNumeric($response['code']);
+        $this->assertInstanceOf("\Illuminate\Http\Response", $response);
     }
 
     public function users() {

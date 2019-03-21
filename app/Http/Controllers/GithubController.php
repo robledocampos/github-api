@@ -12,7 +12,7 @@ class GithubController extends Controller
      * @param $user
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
-    public function user($user){
+    public static function user($user){
         $response = Github::getUser($user);
 
         return self::buildResponse($response);
@@ -22,7 +22,7 @@ class GithubController extends Controller
      * @param $user
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
-    public function userRepos($user){
+    public static function userRepos($user){
         $response = Github::getUserRepos($user);
 
         return self::buildResponse($response);
