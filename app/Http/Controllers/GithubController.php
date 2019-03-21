@@ -17,7 +17,7 @@ class GithubController extends Controller
     public function userRepos($user){
         $response = Github::getUserRepos($user);
 
-        print_r($response); die;
+        return self::buildResponse($response);
     }
 
     private static  function buildResponse($response) {

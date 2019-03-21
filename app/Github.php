@@ -4,6 +4,7 @@ namespace App;
 
 use App\Libraries\ApiClient;
 use Illuminate\Database\Eloquent\Model;
+use Mockery\Exception;
 
 class Github extends Model
 {
@@ -11,8 +12,12 @@ class Github extends Model
 
     public static function getUser($user) {
         $client = new \GuzzleHttp\Client(['http_errors' => false]);
-        $result = $client->request('GET', self::API_URL.$user);
+        try {
+            $result = $client->request('GET', self::API_URL.$user);
+        } catch (Exception $exception) {
 
+            return self::internalServerError();
+        }
         $response['code'] = $result->getStatusCode();
         if ($response['code'] == 200) {
             $userData = \GuzzleHttp\json_decode($result->getBody());
@@ -29,9 +34,45 @@ class Github extends Model
     }
 
     public static function getUserRepos($user) {
-        $apiClient = new ApiClient(self::API_URL, true);
-        $result = $apiClient->call($user."/repos?page=1");
+        $client = new \GuzzleHttp\Client(['http_errors' => false]);
+        try {
+            $page = 1;
+            //do {
+                $result = $client->request('GET', self::API_URL.$user."/repos", ['query' => ['page' => $page]]);
+                $response['code'] = $result->getStatusCode();
+                if ($response['code'] == 200) {
+                    $repos = \GuzzleHttp\json_decode($result->getBody());
+                    if (empty($repos)) {
+                        //break;
+                    } else {
+                        foreach ($repos as $repo) {
+                            $response['body'][] = [
+                                'id' => $repo->id,
+                                'name' => $repo->name,
+                                'description' => $repo->description,
+                                'html_url' => $repo->html_url
+                            ];
+                        }
+                    }
 
-        return $result;
+                } else {
+                    //break;
+                }
+                $page++;
+            //} while(true);
+        } catch (Exception $exception) {
+
+            return self::internalServerError();
+        }
+
+
+        return $response;
+    }
+
+    private static function internalServerError() {
+        $response['code'] = 500;
+        $response['body'] = "Try again later :/";
+
+        return $response;
     }
 }
